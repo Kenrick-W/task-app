@@ -1,17 +1,17 @@
 {
   "name": "task-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-  "start": "node server.js",
-  "test": "jest --coverage"
-},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+    "start": "node server.js",
+    "test": "jest --coverage"
+  },
   "type": "commonjs",
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.2.2"
   }
 }

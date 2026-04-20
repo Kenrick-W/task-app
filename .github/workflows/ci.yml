@@ -19,11 +19,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Show directory (debug)
-        run: ls -la
-
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm install
+
+      - name: Check installed packages
+        run: npm list jest
 
       - name: Run tests
-        run: npm test
+        run: npx jest --coverage
