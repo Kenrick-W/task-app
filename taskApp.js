@@ -9,7 +9,7 @@ let currentId = 1;
 // Root endpoint
 app.get('/', (req, res) => {
     res.json({
-        message: "Task API is running 🚀",
+        message: "Task API is running 🐸",
         version: "1.0.0"
     });
 });
