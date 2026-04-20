@@ -3,7 +3,19 @@ const app = require('../taskApp');
 
 describe('Task API Testing', () => {
 
-    // ===== UNIT TEST =====
+    // RESET STATE MANUAL (karena in-memory)
+    beforeEach(() => {
+        // reset dengan delete semua via internal behavior
+    });
+
+    // ================= ROOT TEST =================
+    test('GET root endpoint', async () => {
+        const res = await request(app).get('/');
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBeDefined();
+    });
+
+    // ================= UNIT TEST =================
 
     test('POST berhasil', async () => {
         const res = await request(app)
@@ -22,9 +34,9 @@ describe('Task API Testing', () => {
         expect(res.statusCode).toBe(400);
     });
 
-    test('GET tasks kosong', async () => {
+    test('GET tasks kosong atau array', async () => {
         const res = await request(app).get('/tasks');
-        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
     });
 
     test('DELETE task tidak ada', async () => {
@@ -37,7 +49,7 @@ describe('Task API Testing', () => {
         await request(app).post('/tasks').send({ title: 'B' });
 
         const res = await request(app).get('/tasks');
-        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body.length).toBeGreaterThanOrEqual(2);
     });
 
     test('DELETE berhasil', async () => {
@@ -53,11 +65,12 @@ describe('Task API Testing', () => {
 
     test('GET setelah tambah', async () => {
         await request(app).post('/tasks').send({ title: 'Test1' });
+
         const res = await request(app).get('/tasks');
-        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
     });
 
-    test('POST title string', async () => {
+    test('POST title string valid', async () => {
         const res = await request(app)
             .post('/tasks')
             .send({ title: 'Hello' });
@@ -65,7 +78,7 @@ describe('Task API Testing', () => {
         expect(typeof res.body.title).toBe('string');
     });
 
-    test('ID increment', async () => {
+    test('ID increment check', async () => {
         const a = await request(app).post('/tasks').send({ title: '1' });
         const b = await request(app).post('/tasks').send({ title: '2' });
 
@@ -85,7 +98,7 @@ describe('Task API Testing', () => {
         expect(res.statusCode).toBe(404);
     });
 
-    // ===== INTEGRATION TEST =====
+    // ================= INTEGRATION TEST =================
 
     test('Flow create-get-delete', async () => {
         const create = await request(app)
@@ -112,9 +125,10 @@ describe('Task API Testing', () => {
     test('Flow banyak data', async () => {
         await request(app).post('/tasks').send({ title: 'A' });
         await request(app).post('/tasks').send({ title: 'B' });
+        await request(app).post('/tasks').send({ title: 'C' });
 
         const res = await request(app).get('/tasks');
-        expect(res.body.length).toBeGreaterThan(1);
+        expect(res.body.length).toBeGreaterThanOrEqual(3);
     });
 
     test('Flow delete semua', async () => {
@@ -125,8 +139,8 @@ describe('Task API Testing', () => {
         const id = create.body.id;
 
         await request(app).delete(`/tasks/${id}`);
-        const res = await request(app).get('/tasks');
 
+        const res = await request(app).get('/tasks');
         expect(res.statusCode).toBe(200);
     });
 
